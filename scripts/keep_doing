@@ -1,0 +1,75 @@
+#!/bin/bash
+
+myname=$(basename $0)
+
+function usage()
+{
+cat <<END
+    Usage: $myname <command> <file1> ...
+
+    $myname will execute the bash list <command> as soon as any of the provided
+    files changes (since the beginning of the last cycle)
+
+END
+exit 1
+}
+
+if [ $# -lt 2 ];
+then
+    usage
+fi
+
+cmd=$1
+shift
+files=$@
+
+echo "$myname: Will execute the following command:"
+echo "$myname:"
+echo "$myname:      $cmd"
+echo "$myname:"
+echo "$myname: as soon as any of the following files is modified:"
+echo "$myname:"
+for f in $files;
+do
+echo "$myname:      $f"
+done
+echo "$myname:"
+echo "$myname:"
+
+timestampfile=$(mktemp --tmpdir $myname.XXXXXX)
+
+function cleanup()
+{
+    rm $timestampfile;
+    echo
+    echo $myname: interrupted
+    exit
+}
+
+trap cleanup SIGINT SIGQUIT SIGHUP SIGTERM
+
+function modified_files()
+{
+    for f in $files;
+    do
+        if [ $f -nt $timestampfile ];
+        then
+            echo $f
+        fi
+    done
+}
+
+while [ true ];
+do
+    mod_files=$(modified_files)
+    if [ -n "$mod_files" ];
+    then
+        for mf in $mod_files;
+        do
+            echo "$myname: $mf was modified"
+        done
+        touch $timestampfile
+        eval $cmd
+    fi
+    sleep 1
+done
