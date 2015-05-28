@@ -23,6 +23,7 @@ cmd=$1
 shift
 files=$@
 
+echo "$myname: -----------------------------------------------------"
 echo "$myname: Will execute the following command:"
 echo "$myname:"
 echo "$myname:      $cmd"
@@ -34,6 +35,7 @@ do
 echo "$myname:      $f"
 done
 echo "$myname:"
+echo "$myname: -----------------------------------------------------"
 echo "$myname:"
 
 timestampfile=$(mktemp --tmpdir $myname.XXXXXX)
@@ -69,7 +71,12 @@ do
             echo "$myname: $mf was modified"
         done
         touch $timestampfile
+        echo "$myname:"
+        echo "$myname: $cmd"
+        echo
         eval $cmd
+        echo
+        echo "$myname: waiting..."
     fi
     sleep 1
 done
