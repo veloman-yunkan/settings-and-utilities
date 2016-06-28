@@ -1,0 +1,10 @@
+#!/usr/bin/tclsh
+
+set fmt [lindex $argv 0]
+append fmt %n
+while { [gets stdin line] >= 0 } {
+    set fields [scan $line $fmt]
+    if { [lindex $fields end] == [string length $line] } {
+        puts [join [lrange $fields 0 end-1] ,]
+    }
+}
