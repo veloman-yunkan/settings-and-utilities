@@ -63,7 +63,7 @@ function modified_files()
 
 visualize_exit_status()
 {
-    if "$@"
+    if eval "$*"
     then
         echo "$(tput setaf 2)========== OK ============$(tput setaf 7)"
     else
@@ -84,7 +84,7 @@ do
         echo "$myname:"
         echo "$myname: $cmd"
         echo
-        visualize_exit_status $cmd
+        visualize_exit_status "$cmd"
         echo
         echo "$myname: waiting..."
     fi
