@@ -2,6 +2,8 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+set modelines=0
+
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
   finish
@@ -17,9 +19,23 @@ set ruler		" show the cursor position all the time
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
+inoremap jj <esc>
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
+inoremap <up>    <nop>
+inoremap <down>  <nop>
+inoremap <left>  <nop>
+inoremap <right> <nop>
+nnoremap <up>    <nop>
+nnoremap <down>  <nop>
+nnoremap <left>  <nop>
+nnoremap <right> <nop>
+nnoremap j gj
+nnoremap k gk
+
+nnoremap / /\v
+vnoremap / /\v
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -72,6 +88,7 @@ endif
 
 set expandtab
 set tabstop=4
+set softtabstop=4
 set shiftwidth=4
 set number
 set showcmd		" display incomplete commands
@@ -89,6 +106,11 @@ if &term == "xterm"
 endif
 
 set wrap
+
+set wildmenu
+set wildmode=list:longest
+set visualbell
+set cursorline
 
 set dictionary=/usr/share/dict/words
 
@@ -111,3 +133,9 @@ endif
 
 execute pathogen#infect()
 
+python3 from powerline.vim import setup as powerline_setup
+python3 powerline_setup()
+python3 del powerline_setup
+set rtp+=/usr/local/lib/python3.5/dist-packages/powerline/bindings/vim
+set laststatus=2
+silent! so .vimlocal
