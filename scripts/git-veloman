@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+git config user.email "veloman.yunkan@gmail.com"
+git config user.name "Veloman Yunkan"
