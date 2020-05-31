@@ -63,7 +63,7 @@ function modified_files()
 
 visualize_exit_status()
 {
-    if eval "$*"
+    if (eval "$*")
     then
         echo "$(tput setaf 2)========== OK ============$(tput setaf 7)"
     else
