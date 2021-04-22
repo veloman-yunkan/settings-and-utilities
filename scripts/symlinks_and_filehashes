@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+die()
+{
+    echo 1>&2 "ERROR: $*"
+    exit 1
+}
+
+if [ $# -ne 1 ]
+then
+    echo 1>&2 "Usage: $(basename "$0") <source_dir>"
+    exit 1
+fi
+
+inputdir=$1
+
+test -d "$inputdir" ||
+    die "'$inputdir' doesn't exist or is not a directory"
+
+print_symlink()
+{
+    echo "$1 -> $(readlink $1)"
+}
+
+zarg()
+{
+    local path fmt_func=$1
+    while read -d $'\0' path
+    do
+        "$fmt_func" "$path"
+    done
+}
+
+echo '########## Symbolic links ##########'
+find "$inputdir" -type l -print0 | sort -z -k 9 | zarg print_symlink
+echo
+echo '########## SHA-256 hashes of files ##########'
+find "$inputdir" -type f -print0 | sort -z -k 2 | zarg sha256sum
