@@ -1,8 +1,6 @@
 let b:keymap_name = "hy"
 
 loadkeymap
-
-" "
 ' ՛
 , ,
 - ֊
