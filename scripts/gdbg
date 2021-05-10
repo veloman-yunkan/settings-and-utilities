@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+
+
+readonly RED=$(tput setaf 1 2>/dev/null)
+readonly GREEN=$(tput setaf 2 2>/dev/null)
+readonly YELLOW=$(tput setaf 3 2>/dev/null)
+readonly WHITE=$(tput setaf 7 2>/dev/null)
+readonly prompt="${YELLOW}gdbg>${WHITE} "
+
+gdbg_ctl()
+(
+    if [ -e .gdbg.history ]
+    then
+        history -r .gdbg.history
+    fi
+    trap 'history -a .gdbg.history' EXIT
+
+    cat<<'END'
+set prompt
+run&
+END
+    sleep 1
+
+    local line
+    while read -erp "$prompt" line
+    do
+        if [[ "$line" == "quit" || "$line" == "q" ]]
+        then
+            break
+        fi
+        history -s "$line"
+        echo interrupt
+        echo "$line"
+        echo 'cont&'
+        sleep 1
+    done
+)
+
+gdbg_ctl|gdb -args "$@"
