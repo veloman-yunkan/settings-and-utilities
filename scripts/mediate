@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+myname="$(basename "$0")"
+
+if [ $# -ne 2 ]
+then
+  cat<<END
+Usage:
+
+    $myname <executable_file> <mediating_command>
+
+where <mediating_command> must be a command that can be
+prepended to the invocation of <executable_file>.
+END
+exit 1
+fi
+
+exe="$1"
+mediating_command="$2"
+
+die()
+{
+  echo 1>&2 "ERROR: $*"
+  exit 1
+}
+
+test -e "$exe" || die "No such file: $exe"
+test -x "$exe" || die "Not executable: $exe"
+
+let i=0
+while ! mv -n "$exe" "${exe}.$i" &> /dev/null
+do
+  let ++i
+done
+
+
+cat >"$exe" <<END
+#!/usr/bin/env bash
+
+mydir="\$(dirname "\$0")"
+exec $mediating_command "\$mydir/"$(printf %q "$(basename "${exe}.$i")")
+END
+chmod +x "$exe"
