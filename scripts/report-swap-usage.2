@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+function get_swap_usage_from_proc_status_file()
+{
+    awk '/Tgid|VmSwap|Name/{printf $2 " " $3}END{print ""}' "$1"
+}
+
+function get_swap_usage_of_all_proceses()
+{
+    for file in /proc/*/status
+    do
+        get_swap_usage_from_proc_status_file "$file"
+    done
+}
+
+get_swap_usage_of_all_proceses|grep kB|sort -k 3 -n
