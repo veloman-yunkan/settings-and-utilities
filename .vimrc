@@ -139,3 +139,19 @@ python3 del powerline_setup
 set rtp+=/usr/local/lib/python3.5/dist-packages/powerline/bindings/vim
 set laststatus=2
 silent! so .vimlocal
+
+call plug#begin()
+
+Plug 'lervag/vimtex', { 'tag': 'v2.15' }
+
+call plug#end()
+
+let g:tex_flavor='latex'
+
+let g:vimtex_view_method='zathura_simple'
+
+let g:vimtex_quickfix_mode=0
+
+set conceallevel=1
+
+let g:tex_conceal='abdmg'
